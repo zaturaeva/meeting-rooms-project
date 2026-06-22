@@ -76,9 +76,4 @@ meeting-rooms-project/
 - [rrrrr613](https://github.com/rrrrr613)
 - [ortasyan-droid](https://github.com/ortasyan-droid)  
 
-git push origin feature/booking-system
-```
 
----
-
-Готово! Теперь на GitHub у проекта будет красивое описание. 🚀
