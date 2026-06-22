@@ -1,10 +1,20 @@
 <!-- frontend/src/views/Dashboard.vue -->
 <template>
   <div class="dashboard">
-    <h2>Meeting Room Booking</h2>
+    <h2>🏢 Meeting Room Booking</h2>
     
     <!-- Компонент отображения ошибок -->
-    <ErrorToast :message="errorMessage" @clear="clearError" />
+    <ErrorToast 
+      :message="errorMessage" 
+      :type="toastType"
+      @clear="clearError" 
+    />
+    
+    <!-- Индикатор загрузки -->
+    <div v-if="loading" class="loading-overlay">
+      <div class="spinner"></div>
+      <p>Loading...</p>
+    </div>
     
     <div class="dashboard-grid">
       <div class="left-panel">
@@ -44,6 +54,7 @@ import type { Room, Booking, CreateBookingDto } from '../types';
 const rooms = ref<Room[]>([]);
 const bookings = ref<Booking[]>([]);
 const errorMessage = ref('');
+const toastType = ref<'error' | 'success'>('error');
 const loading = ref(false);
 
 // Загрузка данных
@@ -57,7 +68,7 @@ const loadData = async () => {
     rooms.value = roomsRes.data;
     bookings.value = bookingsRes.data;
   } catch (err: any) {
-    setError(' Failed to load data. Please check if backend is running.');
+    setError(' Failed to load data. Please check if backend is running.', 'error');
     console.error('Load data error:', err);
   } finally {
     loading.value = false;
@@ -72,8 +83,8 @@ const createBooking = async (dto: CreateBookingDto) => {
     await loadData();
     setError(' Booking created successfully!', 'success');
   } catch (err: any) {
-    const message = err.response?.data?.message || 'Booking failed';
-    setError(` ${message}`);
+    const message = err.response?.data?.message || 'Failed to create booking';
+    setError(` ${message}`, 'error');
     console.error('Create booking error:', err);
   } finally {
     loading.value = false;
@@ -92,16 +103,17 @@ const deleteBooking = async (id: number) => {
     await loadData();
     setError(' Booking deleted successfully!', 'success');
   } catch (err: any) {
-    setError(' Failed to delete booking');
+    setError(' Failed to delete booking', 'error');
     console.error('Delete booking error:', err);
   } finally {
     loading.value = false;
   }
 };
 
-// Установка сообщения (ошибка или успех)
+// Установка сообщения
 const setError = (message: string, type: 'error' | 'success' = 'error') => {
   errorMessage.value = message;
+  toastType.value = type;
   // Автоматически скрыть через 5 секунд
   setTimeout(() => {
     errorMessage.value = '';
@@ -148,8 +160,47 @@ onMounted(() => {
   min-height: 400px;
 }
 
-/* Адаптивность для мобильных устройств */
+/* Стили для индикатора загрузки */
+.loading-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.3);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  z-index: 999;
+  backdrop-filter: blur(2px);
+}
+
+.loading-overlay p {
+  color: white;
+  font-size: 1.2rem;
+  margin-top: 1rem;
+}
+
+.spinner {
+  width: 50px;
+  height: 50px;
+  border: 4px solid rgba(255, 255, 255, 0.3);
+  border-top: 4px solid white;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* Адаптивность */
 @media (max-width: 768px) {
+  .dashboard {
+    padding: 1rem;
+  }
   .dashboard-grid {
     grid-template-columns: 1fr;
   }

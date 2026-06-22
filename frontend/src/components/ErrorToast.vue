@@ -2,6 +2,7 @@
 <template>
   <Transition name="fade">
     <div v-if="message" :class="['toast', type]">
+      <span class="toast-icon">{{ type === 'success' ? 'yes' : 'no' }}</span>
       <span class="toast-message">{{ message }}</span>
       <button @click="$emit('clear')" class="toast-close">×</button>
     </div>
@@ -20,12 +21,12 @@ defineEmits<{ (e: 'clear'): void }>();
 <style scoped>
 .toast {
   position: fixed;
-  top: 20px;
-  right: 20px;
+  bottom: 24px;
+  right: 24px;
   color: white;
-  padding: 14px 24px;
-  border-radius: 8px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  padding: 14px 20px;
+  border-radius: 10px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
   z-index: 1000;
   max-width: 450px;
   display: flex;
@@ -33,18 +34,25 @@ defineEmits<{ (e: 'clear'): void }>();
   gap: 12px;
   font-size: 0.95rem;
   min-width: 200px;
+  backdrop-filter: blur(4px);
 }
 
 .toast.error {
-  background: #e74c3c;
+  background: linear-gradient(135deg, #e74c3c, #c0392b);
 }
 
 .toast.success {
-  background: #27ae60;
+  background: linear-gradient(135deg, #27ae60, #1e8449);
+}
+
+.toast-icon {
+  font-size: 1.2rem;
+  flex-shrink: 0;
 }
 
 .toast-message {
   flex: 1;
+  line-height: 1.4;
 }
 
 .toast-close {
@@ -54,8 +62,9 @@ defineEmits<{ (e: 'clear'): void }>();
   font-size: 1.5rem;
   cursor: pointer;
   padding: 0 4px;
-  opacity: 0.8;
+  opacity: 0.7;
   transition: opacity 0.2s;
+  line-height: 1;
 }
 
 .toast-close:hover {
@@ -65,16 +74,16 @@ defineEmits<{ (e: 'clear'): void }>();
 /* Анимации */
 .fade-enter-active,
 .fade-leave-active {
-  transition: all 0.3s ease;
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .fade-enter-from {
   opacity: 0;
-  transform: translateY(-20px) scale(0.95);
+  transform: translateY(20px) scale(0.95);
 }
 
 .fade-leave-to {
   opacity: 0;
-  transform: translateY(-20px) scale(0.95);
+  transform: translateY(20px) scale(0.95);
 }
 </style>
