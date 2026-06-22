@@ -1,40 +1,40 @@
-<!-- frontend/src/views/Dashboard.vue -->
+<<!-- frontend/src/views/Dashboard.vue -->
 <template>
   <div class="dashboard">
-    <h2>🏢 Meeting Room Booking</h2>
-    
+    <h2> Meeting Room Booking</h2>
+
     <!-- Компонент отображения ошибок -->
-    <ErrorToast 
-      :message="errorMessage" 
+    <ErrorToast
+      :message="errorMessage"
       :type="toastType"
-      @clear="clearError" 
+      @clear="clearError"
     />
-    
+
     <!-- Индикатор загрузки -->
     <div v-if="loading" class="loading-overlay">
       <div class="spinner"></div>
       <p>Loading...</p>
     </div>
-    
+
     <div class="dashboard-grid">
       <div class="left-panel">
         <!-- Список комнат -->
         <RoomsList :rooms="rooms" />
-        
+
         <!-- Форма создания бронирования -->
-        <BookingForm 
-          :rooms="rooms" 
+        <BookingForm
+          :rooms="rooms"
           @submit="createBooking"
           @error="setError"
         />
       </div>
-      
+
       <div class="right-panel">
         <!-- Список бронирований -->
-        <BookingsList 
-          :bookings="bookings" 
+        <BookingsList
+          :bookings="bookings"
           :rooms="rooms"
-          @delete="deleteBooking" 
+          @delete="deleteBooking"
         />
       </div>
     </div>
@@ -96,7 +96,7 @@ const deleteBooking = async (id: number) => {
   if (!confirm('Are you sure you want to delete this booking?')) {
     return;
   }
-  
+
   try {
     loading.value = true;
     await bookingsApi.delete(id);

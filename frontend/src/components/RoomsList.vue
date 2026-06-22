@@ -18,7 +18,7 @@ import type { Room } from '../types';
 const rooms = ref<Room[]>([]);
 
 onMounted(async () => {
-  const response = await roomsApi.getAll();
+  ;
   rooms.value = response.data;
 });
 </script>
